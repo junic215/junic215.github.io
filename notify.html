@@ -316,7 +316,9 @@
                 document.getElementById('message').value = '';
 
             } catch (error) {
-                showError('エラーが発生しました: ' + error.message);
+                console.error("送信エラー:", error);
+                const errorMsg = error.text || error.message || JSON.stringify(error) || "不明なエラー";
+                showError('エラーが発生しました: ' + errorMsg);
             } finally {
                 setLoading(false);
             }
