@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -39,7 +40,7 @@
             background: var(--card-bg);
             padding: 2.5rem 2rem;
             border-radius: 20px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.04);
             width: 100%;
             max-width: 450px;
             box-sizing: border-box;
@@ -162,8 +163,11 @@
 
         .loading-overlay {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.7);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             display: flex;
@@ -181,14 +185,21 @@
             opacity: 1;
             pointer-events: all;
         }
-        
+
         #form-section {
             position: relative;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -196,7 +207,7 @@
 <body>
     <div class="container" id="main-container">
         <div class="loading-overlay" id="loading-txt">送信中...</div>
-        <h1>忘れ物を見つけました</h1>
+        <h1>スキャンありがうございます</h1>
         <p class="subtitle">持ち主にメッセージとお知らせを送信できます。</p>
 
         <div id="error-box" class="error-message"></div>
@@ -204,12 +215,12 @@
         <div id="form-section">
             <div class="form-group">
                 <label for="message">メッセージ</label>
-                <textarea id="message" placeholder="例: ○○駅の改札窓口に預けました。〇〇の特徴があるカバンです。" required></textarea>
+                <textarea id="message" placeholder="例: 〇〇の場所に、水筒が落ちていました。" required></textarea>
             </div>
 
             <div class="checkbox-group">
                 <input type="checkbox" id="send-location" checked>
-                <label for="send-location">現在地の位置情報を含めて送信する</label>
+                <label for="send-location">位置情報を含めて送信する</label>
             </div>
 
             <button id="btn-submit" onclick="handleSubmit()">持ち主に送信する</button>
@@ -318,7 +329,7 @@
 
                 await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
 
-                alert('持ち主にメッセージを送信しました！ご協力ありがとうございます。');
+                alert('持ち主にメッセージを送信しました！\nご協力ありがとうございます。');
                 document.getElementById('message').value = '';
 
             } catch (error) {
@@ -331,4 +342,5 @@
         }
     </script>
 </body>
+
 </html>

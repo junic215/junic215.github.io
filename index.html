@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -41,7 +42,7 @@
             background: var(--card-bg);
             padding: 2.5rem 2rem;
             border-radius: 20px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.04);
             width: 100%;
             max-width: 400px;
             box-sizing: border-box;
@@ -149,7 +150,7 @@
             border-radius: 16px;
             border: 1px solid var(--border);
             display: inline-block;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
         }
 
         .url-box {
@@ -166,8 +167,11 @@
 
         .loading-overlay {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.7);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             display: flex;
@@ -180,6 +184,7 @@
             font-weight: 600;
             color: var(--primary);
         }
+
         .container.is-loading .loading-overlay {
             opacity: 1;
             pointer-events: all;
@@ -195,8 +200,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -207,8 +219,8 @@
 
         <!-- 登録・ログインフォーム -->
         <div id="auth-section">
-            <h1>ログイン</h1>
-            <p class="subtitle">忘れ物通知サービスへようこそ</p>
+            <h1>Return QR</h1>
+            <p class="subtitle">ログインまたは新規登録</p>
             <div class="form-group">
                 <label for="email">メールアドレス</label>
                 <input type="email" id="email" placeholder="example@apple.com" required>
@@ -225,11 +237,11 @@
         <div id="dashboard-section">
             <h1>My QRコード</h1>
             <p class="subtitle">このQRコードを印刷して持ち物に貼り付けましょう</p>
-            
+
             <div class="qr-container" id="qrcode"></div>
-            
+
             <div class="url-box" id="url-box"></div>
-            
+
             <button class="btn-secondary" onclick="copyURL()">URLをコピーする</button>
 
             <!-- ログアウトボタン -->
@@ -298,7 +310,7 @@
         }
 
         async function handleLogout() {
-            if(!confirm('ログアウトしますか？')) return;
+            if (!confirm('ログアウトしますか？')) return;
             setLoading(true);
             await supabaseClient.auth.signOut();
             setLoading(false);
@@ -331,9 +343,9 @@
                 text: url,
                 width: 160,
                 height: 160,
-                colorDark : "#1d1d1f",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
+                colorDark: "#1d1d1f",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
         }
 
@@ -386,4 +398,5 @@
         checkSession();
     </script>
 </body>
+
 </html>
