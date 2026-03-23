@@ -1,216 +1,256 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>忘れ物通知サービス - 登録・ログイン</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>忘れ物通知サービス</title>
 
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- QRCode CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         :root {
-            --primary: #2196F3;
-            --primary-hover: #1e88e5;
-            --success: #4CAF50;
-            --success-hover: #45a049;
-            --warning: #ff9800;
-            --warning-hover: #fb8c00;
-            --bg-color: #f4f7f6;
+            --primary: #0071e3;
+            --primary-hover: #0077ed;
+            --bg-color: #f5f5f7;
             --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-sub: #666666;
+            --text-main: #1d1d1f;
+            --text-sub: #86868b;
+            --border: #d2d2d7;
+            --danger: #ff3b30;
+            --danger-hover: #ff453a;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
             background: var(--card-bg);
             padding: 2.5rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0,0,0,0.04);
             width: 100%;
             max-width: 400px;
             box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
         h1 {
             font-size: 1.5rem;
-            text-align: center;
-            color: var(--text-main);
+            font-weight: 600;
             margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            font-size: 0.9rem;
+            color: var(--text-sub);
             margin-bottom: 2rem;
         }
 
         .form-group {
             margin-bottom: 1.2rem;
+            text-align: left;
         }
 
         label {
             display: block;
             margin-bottom: 0.5rem;
-            color: var(--text-sub);
-            font-weight: bold;
-            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 500;
+            font-size: 0.85rem;
         }
 
         input[type="email"],
         input[type="password"] {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
             box-sizing: border-box;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            background-color: #fafafa;
+            transition: all 0.2s ease;
         }
 
         input[type="email"]:focus,
         input[type="password"]:focus {
             outline: none;
             border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
         }
 
         button {
             width: 100%;
-            padding: 0.85rem;
+            padding: 0.9rem;
             border: none;
-            border-radius: 6px;
-            color: white;
-            font-weight: bold;
+            border-radius: 12px;
+            font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
             margin-bottom: 0.8rem;
-            transition: background-color 0.3s, transform 0.1s;
+            transition: all 0.2s ease;
         }
 
         button:active {
-            transform: translateY(1px);
+            transform: scale(0.98);
         }
 
-        .btn-register {
-            background-color: var(--success);
-        }
-
-        .btn-register:hover {
-            background-color: var(--success-hover);
-        }
-
-        .btn-login {
+        .btn-primary {
             background-color: var(--primary);
-            margin-bottom: 0;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.2);
         }
 
-        .btn-login:hover {
+        .btn-primary:hover {
             background-color: var(--primary-hover);
         }
 
-        .btn-generate {
-            background-color: var(--warning);
-            display: none;
-            margin-bottom: 1.5rem;
+        .btn-secondary {
+            background-color: #e8e8ed;
+            color: var(--text-main);
         }
 
-        .btn-generate:hover {
-            background-color: var(--warning-hover);
+        .btn-secondary:hover {
+            background-color: #d2d2d7;
         }
 
-        .btn-copy {
-            background-color: var(--text-sub);
-            display: none;
-            margin-top: 1rem;
+        .btn-danger {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            margin-top: 1.5rem;
         }
 
-        .btn-copy:hover {
-            background-color: #555;
+        .btn-danger:hover {
+            background-color: #ffeeed;
+        }
+
+        .qr-container {
+            margin: 1.5rem auto;
+            padding: 1.5rem;
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: inline-block;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
         }
 
         .url-box {
             padding: 1rem;
-            background-color: #e3f2fd;
-            border: 2px dashed var(--primary);
-            border-radius: 6px;
+            background-color: #f5f5f7;
+            border-radius: 12px;
             word-break: break-all;
-            display: none;
-            text-align: center;
-            color: var(--text-main);
-            position: relative;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+            user-select: all;
+            border: 1px dashed #d2d2d7;
         }
 
-        .loading {
-            opacity: 0.7;
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
             pointer-events: none;
-            position: relative;
+            transition: opacity 0.2s;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .container.is-loading .loading-overlay {
+            opacity: 1;
+            pointer-events: all;
         }
 
         #dashboard-section {
-            text-align: center;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        #auth-section {
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>忘れ物通知サービス</h1>
+    <div class="container" id="main-container">
+        <div class="loading-overlay">処理中...</div>
 
         <!-- 登録・ログインフォーム -->
         <div id="auth-section">
+            <h1>ログイン</h1>
+            <p class="subtitle">忘れ物通知サービスへようこそ</p>
             <div class="form-group">
                 <label for="email">メールアドレス</label>
-                <input type="email" id="email" placeholder="example@example.com" required>
+                <input type="email" id="email" placeholder="example@apple.com" required>
             </div>
             <div class="form-group">
                 <label for="password">パスワード</label>
                 <input type="password" id="password" placeholder="6文字以上" required>
             </div>
-            <button class="btn-register" id="btn-register" onclick="handleRegister()">登録する</button>
-            <button class="btn-login" id="btn-login" onclick="handleLogin()">ログイン</button>
+            <button class="btn-primary" onclick="handleLogin()">ログイン</button>
+            <button class="btn-secondary" onclick="handleRegister()">新規登録する</button>
         </div>
 
         <!-- ログイン後ダッシュボード -->
-        <div id="dashboard-section" style="display: none;">
-            <p style="color: var(--text-sub); margin-bottom: 1.5rem;">ログインに成功しました。</p>
-            <button class="btn-generate" id="btn-generate" onclick="generateURL()"
-                style="display: block;">QRコード用URLを生成</button>
-
+        <div id="dashboard-section">
+            <h1>My QRコード</h1>
+            <p class="subtitle">このQRコードを印刷して持ち物に貼り付けましょう</p>
+            
+            <div class="qr-container" id="qrcode"></div>
+            
             <div class="url-box" id="url-box"></div>
-            <button class="btn-copy" id="btn-copy" onclick="copyURL()">URLをコピーする</button>
+            
+            <button class="btn-secondary" onclick="copyURL()">URLをコピーする</button>
+
+            <!-- ログアウトボタン -->
+            <button class="btn-danger" onclick="handleLogout()">ログアウト</button>
         </div>
     </div>
 
     <script>
-        // ■ Supabase設定 (ご自身のプロジェクト情報に変更してください)
         const SUPABASE_URL = 'https://inzjfyxgjbrxvtpzpqgc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluempmeXhnamJyeHZ0cHpwcWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxODkzMTAsImV4cCI6MjA4OTc2NTMxMH0.MHvz-nxpfdSkvJd8zexyHSvT_o8Us7F9DRr13_5awLo';
 
-        // Supabaseクライアントの初期化
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         let currentUser = null;
+        let qrCodeObj = null;
 
-        // ボタンのローディング状態を切り替える関数
-        function setLoading(buttonId, isLoading) {
-            const btn = document.getElementById(buttonId);
-            if (isLoading) {
-                btn.classList.add('loading');
-                btn.dataset.originalText = btn.innerText;
-                btn.innerText = '処理中...';
-            } else {
-                btn.classList.remove('loading');
-                btn.innerText = btn.dataset.originalText;
-            }
+        function setLoading(isLoading) {
+            const container = document.getElementById('main-container');
+            if (isLoading) container.classList.add('is-loading');
+            else container.classList.remove('is-loading');
         }
 
-        // サインアップ処理
         async function handleRegister() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
@@ -220,21 +260,20 @@
                 return;
             }
 
-            setLoading('btn-register', true);
+            setLoading(true);
             const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
             });
-            setLoading('btn-register', false);
+            setLoading(false);
 
             if (error) {
                 alert('登録エラー: ' + error.message);
             } else {
-                alert('登録が完了しました。確認メールをチェックするか、そのままログインをお試しください。');
+                alert('登録が完了しました。そのままログインをお試しください。');
             }
         }
 
-        // ログイン処理
         async function handleLogin() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
@@ -244,46 +283,62 @@
                 return;
             }
 
-            setLoading('btn-login', true);
+            setLoading(true);
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
-            setLoading('btn-login', false);
+            setLoading(false);
 
             if (error) {
                 alert('ログインエラー: ' + error.message);
             } else {
-                currentUser = data.user;
-                // UIの切り替え
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('dashboard-section').style.display = 'block';
+                showDashboard(data.user);
             }
         }
 
-        // URL生成処理
-        function generateURL() {
-            if (!currentUser) {
-                alert('ログインしていません。');
-                return;
-            }
+        async function handleLogout() {
+            if(!confirm('ログアウトしますか？')) return;
+            setLoading(true);
+            await supabaseClient.auth.signOut();
+            setLoading(false);
+            currentUser = null;
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('dashboard-section').style.display = 'none';
+        }
 
+        function showDashboard(user) {
+            currentUser = user;
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+            generateQR();
+        }
+
+        function generateQR() {
+            if (!currentUser) return;
             const uid = currentUser.id;
-            // ローカル環境用（本番環境では実際のドメインに変更してください）
             const url = `https://junic215.github.io/notify.html?uid=${uid}`;
 
             const urlBox = document.getElementById('url-box');
             urlBox.innerText = url;
-            urlBox.style.display = 'block';
 
-            document.getElementById('btn-copy').style.display = 'block';
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = ""; // 既存のQRコードをクリア
+
+            qrCodeObj = new QRCode(qrContainer, {
+                text: url,
+                width: 160,
+                height: 160,
+                colorDark : "#1d1d1f",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
         }
 
-        // URLコピー処理
         function copyURL() {
-            const urlBox = document.getElementById('url-box');
-            const url = urlBox.innerText;
-
+            const url = document.getElementById('url-box').innerText;
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(url).then(() => {
                     alert('URLをコピーしました！');
@@ -291,7 +346,6 @@
                     alert('コピーに失敗しました: ' + err);
                 });
             } else {
-                // Clipboard APIが使えない場合のフォールバック
                 const textArea = document.createElement("textarea");
                 textArea.value = url;
                 document.body.appendChild(textArea);
@@ -299,25 +353,16 @@
                 try {
                     document.execCommand('copy');
                     alert('URLをコピーしました！');
-                } catch (err) {
-                    alert('コピーに失敗しました。');
-                }
+                } catch (err) { }
                 document.body.removeChild(textArea);
             }
         }
 
-        // ページ読み込み時のセッション確認とURLハッシュのクリーンアップ
         async function checkSession() {
-            // ① まずセッション取得（これでURLのトークンが処理される）
             const { data, error } = await supabaseClient.auth.getSession();
-
             if (data && data.session) {
-                currentUser = data.session.user;
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('dashboard-section').style.display = 'block';
+                showDashboard(data.session.user);
             }
-
-            // ② 少し待ってからURLをきれいにする（これがポイント）
             setTimeout(() => {
                 if (window.location.hash) {
                     window.history.replaceState({}, document.title, window.location.pathname);
@@ -325,14 +370,9 @@
             }, 100);
         }
 
-        // 認証状態の変更を監視（ログインの維持などに必要）
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
-                currentUser = session.user;
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('dashboard-section').style.display = 'block';
-
-                // ← これ追加
+                showDashboard(session.user);
                 if (window.location.hash) {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
@@ -343,9 +383,7 @@
             }
         });
 
-        // 初期化実行
         checkSession();
     </script>
 </body>
-
 </html>
