@@ -711,7 +711,7 @@
                 <div class="url-box" id="url-box"></div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.8rem;">
-                    <button class="btn-primary" style="margin-bottom: 0;" onclick="downloadImage()">画像をダウンロード（A4・36枚）</button>
+                    <button class="btn-primary" style="margin-bottom: 0;" onclick="downloadImage()">印刷用画像を表示（A4・36枚）</button>
                     <button class="btn-secondary" style="margin-bottom: 0;" onclick="copyURL()">URLをコピーする</button>
                 </div>
 
@@ -743,6 +743,20 @@
                 </p>
             </div>
             <button class="btn-primary" style="margin-top: 0;" onclick="closeTermsModal()">同意して閉じる</button>
+        </div>
+    </div>
+
+    <!-- 画像ダウンロード用モーダル -->
+    <div id="image-modal" class="modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="modal-content" style="max-width: 90vw; padding: 1.5rem 1rem; text-align: center;">
+            <h3 style="margin-top: 0; font-size: 1.1rem; color: var(--text-main);">画像を保存してください</h3>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 1rem;">
+                スマートフォンの方は画像を<strong>長押し</strong>、PCの方は<strong>右クリック</strong>で保存し、A4用紙に印刷してください。
+            </p>
+            <div style="overflow-y: auto; max-height: 60vh; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1rem;">
+                <img id="generated-image-preview" src="" alt="A4 QR Codes" style="width: 100%; height: auto; display: block;">
+            </div>
+            <button class="btn-secondary" style="margin-top: 0; margin-bottom: 0;" onclick="closeImageModal()">閉じる</button>
         </div>
     </div>
 
@@ -926,9 +940,15 @@
             document.getElementById('terms-modal').classList.remove('show');
         }
 
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.remove('show');
+        }
+
         function handleOverlayClick(event) {
             if (event.target.id === 'terms-modal') {
                 closeTermsModal();
+            } else if (event.target.id === 'image-modal') {
+                closeImageModal();
             }
         }
 
@@ -1005,10 +1025,8 @@
                 imageContainer.style.zIndex = '-100';
 
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const link = document.createElement('a');
-                link.download = 'ReturnQR_A4.jpg';
-                link.href = imgData;
-                link.click();
+                document.getElementById('generated-image-preview').src = imgData;
+                document.getElementById('image-modal').classList.add('show');
             } catch (err) {
                 console.error("画像生成エラー:", err);
                 alert("画像の生成に失敗しました。");
