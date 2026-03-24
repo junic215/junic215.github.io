@@ -402,8 +402,15 @@
                 <label for="password">パスワード</label>
                 <input type="password" id="password" placeholder="6文字以上" required>
             </div>
+            <div class="form-group"
+                style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
+                <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
+            </div>
             <button class="btn-primary" onclick="handleLogin()">ログイン</button>
-            <button class="btn-secondary" onclick="showRegisterSection()">新規登録</button>
+            <div id="login-error"
+                style="display: none; color: #ff3b30; font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500;">
+            </div>
+            <button class="btn-secondary" onclick="showRegisterSection()">新規登録はこちら</button>
 
             <div class="auth-links">
                 <a href="#" onclick="handleForgotPassword(); return false;">パスワードを忘れた方</a>
@@ -434,11 +441,13 @@
                 <input type="text" id="reg-nickname" placeholder="ニックネーム" required>
             </div>
 
-            <div class="form-group" style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
+            <div class="form-group"
+                style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
                 <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
             </div>
 
             <button class="btn-primary" onclick="submitRegister()">登録する</button>
+            <div id="register-error" style="display: none; color: #ff3b30; font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500;"></div>
             <button class="btn-secondary" style="margin-top: 0.5rem;" onclick="showLoginSection()">ログイン画面に戻る</button>
         </div>
 
@@ -505,6 +514,9 @@
         function showRegisterSection() {
             document.getElementById('auth-section').style.display = 'none';
             document.getElementById('register-section').style.display = 'block';
+            if(document.getElementById('register-error')) {
+                document.getElementById('register-error').style.display = 'none';
+            }
         }
 
         function showLoginSection() {
@@ -517,25 +529,32 @@
             const password = document.getElementById('reg-password').value;
             const passwordConfirm = document.getElementById('reg-password-confirm').value;
             const nickname = document.getElementById('reg-nickname').value.trim();
-            const recaptchaResponse = grecaptcha.getResponse();
+            const recaptchaResponse = document.querySelector('#register-section .g-recaptcha-response').value;
+
+            const registerError = document.getElementById('register-error');
+            registerError.style.display = 'none';
 
             if (!email || !password || !passwordConfirm || !nickname) {
-                alert('すべての項目を入力してください。');
+                registerError.innerText = 'すべての項目を入力してください。';
+                registerError.style.display = 'block';
                 return;
             }
 
             if (password !== passwordConfirm) {
-                alert('パスワードが一致しません。');
+                registerError.innerText = 'パスワードが一致しません。';
+                registerError.style.display = 'block';
                 return;
             }
 
             if (password.length < 6) {
-                alert('パスワードは6文字以上で入力してください。');
+                registerError.innerText = 'パスワードは6文字以上で入力してください。';
+                registerError.style.display = 'block';
                 return;
             }
 
             if (recaptchaResponse.length === 0) {
-                alert('reCAPTCHA（チェックボックス）を確認してください。');
+                registerError.innerText = 'reCAPTCHA（チェックボックス）を確認してください。';
+                registerError.style.display = 'block';
                 return;
             }
 
@@ -553,9 +572,13 @@
             setLoading(false);
 
             if (error) {
-                alert('登録エラー: ' + error.message);
+                registerError.innerText = '登録エラー: ' + error.message;
+                registerError.style.display = 'block';
+            } else if (data && data.user && data.user.identities && data.user.identities.length === 0) {
+                registerError.innerText = 'このメールアドレスは既に登録されています。';
+                registerError.style.display = 'block';
             } else {
-                alert('登録が完了しました。入力した情報でログインしてください。');
+                alert('登録が完了しました。メールを確認してログインしてください。');
                 showLoginSection();
                 document.getElementById('email').value = email;
                 document.getElementById('password').value = '';
@@ -568,9 +591,20 @@
         async function handleLogin() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            const recaptchaResponse = document.querySelector('#auth-section .g-recaptcha-response').value;
+            const loginError = document.getElementById('login-error');
+
+            loginError.style.display = 'none';
 
             if (!email || !password) {
-                alert('メールアドレスとパスワードを入力してください。');
+                loginError.innerText = 'メールアドレスとパスワードを入力してください。';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            if (recaptchaResponse.length === 0) {
+                loginError.innerText = 'reCAPTCHA（チェックボックス）を確認してください。';
+                loginError.style.display = 'block';
                 return;
             }
 
@@ -582,7 +616,8 @@
             setLoading(false);
 
             if (error) {
-                alert('ログインエラー: ' + error.message);
+                loginError.innerText = 'メールアドレスまたはパスワードが違います。';
+                loginError.style.display = 'block';
             } else {
                 showDashboard(data.user);
             }

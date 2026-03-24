@@ -8,6 +8,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- reCAPTCHA API -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <style>
         :root {
@@ -223,6 +225,10 @@
                 <label for="send-location">位置情報を含めて送信する</label>
             </div>
 
+            <div class="form-group" style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+                <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
+            </div>
+
             <button id="btn-submit" onclick="handleSubmit()">持ち主に送信する</button>
         </div>
     </div>
@@ -298,8 +304,15 @@
             errorBox.style.display = 'none';
 
             const message = document.getElementById('message').value;
+            const recaptchaResponse = grecaptcha.getResponse();
+
             if (!message.trim()) {
-                alert('メッセージを入力してください。');
+                showError('メッセージを入力してください。');
+                return;
+            }
+            
+            if (recaptchaResponse.length === 0) {
+                showError('reCAPTCHA（チェックボックス）を確認してください。');
                 return;
             }
 
