@@ -10,8 +10,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- QRCode CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- html2pdf API -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- html2canvas API -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
@@ -537,12 +537,13 @@
             }
         }
 
-        /* ----- PDF用スタイル ----- */
-        #pdf-container {
+        /* ----- 画像生成用スタイル ----- */
+        #image-container {
             position: absolute;
             top: -9999px;
             left: -9999px;
             width: 210mm;
+            min-height: 297mm;
             background: white;
             padding: 10mm;
             box-sizing: border-box;
@@ -710,7 +711,7 @@
                 <div class="url-box" id="url-box"></div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.8rem;">
-                    <button class="btn-primary" style="margin-bottom: 0;" onclick="downloadPDF()">PDFをダウンロード（A4・36枚）</button>
+                    <button class="btn-primary" style="margin-bottom: 0;" onclick="downloadImage()">画像をダウンロード（A4・36枚）</button>
                     <button class="btn-secondary" style="margin-bottom: 0;" onclick="copyURL()">URLをコピーする</button>
                 </div>
 
@@ -745,8 +746,8 @@
         </div>
     </div>
 
-    <!-- PDF生成用エリア（非表示） -->
-    <div id="pdf-container">
+    <!-- 画像生成用エリア（非表示） -->
+    <div id="image-container">
         <div id="print-area"></div>
     </div>
 
@@ -944,16 +945,15 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function downloadPDF() {
+        async function downloadImage() {
             if (!currentUser) return;
             setLoading(true);
             const uid = currentUser.id;
             const url = `https://junic215.github.io/notify.html?uid=${uid}`;
-            const pdfContainer = document.getElementById('pdf-container');
+            const imageContainer = document.getElementById('image-container');
             const printArea = document.getElementById('print-area');
             printArea.innerHTML = '';
 
-            // A4 幅に6個、縦に6個で合計36個 (1ページにピッタリ収まるように設計)
             for (let i = 0; i < 36; i++) {
                 const item = document.createElement('div');
                 item.className = 'print-item';
@@ -976,7 +976,7 @@
                 
                 new QRCode(qrBox, {
                     text: url,
-                    width: 100, // 高解像度で生成
+                    width: 100,
                     height: 100,
                     colorDark: "#1d1d1f",
                     colorLight: "#ffffff",
@@ -984,22 +984,34 @@
                 });
             }
 
-            // QRCode群の生成完了を待機
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            const opt = {
-                margin: 0,
-                filename: 'ReturnQR_A4.pdf',
-                image: { type: 'jpeg', quality: 1.0 },
-                html2canvas: { scale: 3, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+            await new Promise(resolve => setTimeout(resolve, 600));
 
             try {
-                await html2pdf().set(opt).from(pdfContainer).save();
+                // キャプチャ用に一時的に画面内に配置（背景に隠して見えないようにする）
+                const originalTop = imageContainer.style.top;
+                const originalLeft = imageContainer.style.left;
+                imageContainer.style.top = '0px';
+                imageContainer.style.left = '0px';
+                imageContainer.style.zIndex = '-1000';
+
+                const canvas = await html2canvas(imageContainer, {
+                    scale: 3,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                imageContainer.style.top = originalTop;
+                imageContainer.style.left = originalLeft;
+                imageContainer.style.zIndex = '-100';
+
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const link = document.createElement('a');
+                link.download = 'ReturnQR_A4.jpg';
+                link.href = imgData;
+                link.click();
             } catch (err) {
-                console.error("PDF生成エラー:", err);
-                alert("PDFの生成に失敗しました。");
+                console.error("画像生成エラー:", err);
+                alert("画像の生成に失敗しました。");
             } finally {
                 setLoading(false);
             }
