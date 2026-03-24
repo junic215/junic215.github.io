@@ -104,7 +104,8 @@
         }
 
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="text"] {
             width: 100%;
             padding: 1rem 1.2rem;
             border: 1px solid transparent;
@@ -116,7 +117,8 @@
         }
 
         input[type="email"]:focus,
-        input[type="password"]:focus {
+        input[type="password"]:focus,
+        input[type="text"]:focus {
             outline: none;
             border-color: var(--primary);
             background-color: #fff;
@@ -543,7 +545,8 @@
                 password: password,
                 options: {
                     data: {
-                        nickname: nickname
+                        nickname: nickname,
+                        display_name: nickname
                     }
                 }
             });
