@@ -8,6 +8,7 @@
 
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <!-- QRCode CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- html2canvas API -->
@@ -586,12 +587,13 @@
         }
 
         .print-text {
-            font-size: 5pt;
-            line-height: 1.2;
+            font-size: 6.5pt;
+            line-height: 1.25;
             font-weight: bold;
             color: #000;
             margin-top: 1mm;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.2px;
+            word-break: keep-all;
         }
     </style>
 </head>
@@ -989,7 +991,7 @@
                 
                 const text = document.createElement('div');
                 text.className = 'print-text';
-                text.innerText = '持ち主に匿名で通知できます';
+                text.innerHTML = '持ち主に匿名で連絡できます。<br>ご協力お願いします。';
                 item.appendChild(text);
                 
                 printArea.appendChild(item);
