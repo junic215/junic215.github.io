@@ -10,6 +10,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- QRCode CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- html2pdf API -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
@@ -535,65 +537,60 @@
             }
         }
 
-        /* ----- 印刷用スタイル ----- */
-        #print-area {
-            display: none;
+        /* ----- PDF用スタイル ----- */
+        #pdf-container {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 210mm;
+            background: white;
+            padding: 10mm;
+            box-sizing: border-box;
+            z-index: -100;
         }
 
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            body {
-                background: transparent;
-                margin: 0;
-                padding: 0;
-            }
-            #print-area, #print-area * {
-                visibility: visible;
-            }
-            #print-area {
-                display: flex !important;
-                flex-wrap: wrap;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                gap: 5mm;
-                padding: 10mm;
-                box-sizing: border-box;
-                justify-content: flex-start;
-                align-content: flex-start;
-            }
-            .print-item {
-                width: 48mm;
-                text-align: center;
-                border: 1px dashed #ccc;
-                padding: 8px;
-                box-sizing: border-box;
-                page-break-inside: avoid;
-                margin-bottom: 5mm;
-            }
-            .print-logo {
-                width: 80%;
-                margin-bottom: 5px;
-            }
-            .print-qr {
-                display: flex;
-                justify-content: center;
-                margin-bottom: 5px;
-            }
-            .print-qr img {
-                width: 100%;
-                max-width: 35mm;
-            }
-            .print-text {
-                font-size: 7.5pt;
-                line-height: 1.3;
-                font-weight: bold;
-                color: #000;
-                margin-top: 5px;
-            }
+        #print-area {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            gap: 2mm;
+            justify-content: space-between;
+            align-content: flex-start;
+        }
+
+        .print-item {
+            width: 30mm;
+            text-align: center;
+            border: 1px dashed #ccc;
+            padding: 3mm;
+            box-sizing: border-box;
+            margin-bottom: 2mm;
+        }
+
+        .print-logo {
+            width: 80%;
+            margin-bottom: 2mm;
+        }
+
+        .print-qr {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1mm;
+        }
+
+        .print-qr img {
+            width: 25mm !important;
+            height: 25mm !important;
+            margin: 0 auto;
+        }
+
+        .print-text {
+            font-size: 5pt;
+            line-height: 1.2;
+            font-weight: bold;
+            color: #000;
+            margin-top: 1mm;
+            letter-spacing: -0.5px;
         }
     </style>
 </head>
@@ -713,7 +710,7 @@
                 <div class="url-box" id="url-box"></div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.8rem;">
-                    <button class="btn-primary" style="margin-bottom: 0;" onclick="prepareAndPrint()">印刷用QRコード（A4）</button>
+                    <button class="btn-primary" style="margin-bottom: 0;" onclick="downloadPDF()">PDFをダウンロード（A4・36枚）</button>
                     <button class="btn-secondary" style="margin-bottom: 0;" onclick="copyURL()">URLをコピーする</button>
                 </div>
 
@@ -748,8 +745,10 @@
         </div>
     </div>
 
-    <!-- A4印刷用エリア -->
-    <div id="print-area"></div>
+    <!-- PDF生成用エリア（非表示） -->
+    <div id="pdf-container">
+        <div id="print-area"></div>
+    </div>
 
     <script>
         const SUPABASE_URL = 'https://inzjfyxgjbrxvtpzpqgc.supabase.co';
@@ -945,15 +944,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function prepareAndPrint() {
+        async function downloadPDF() {
             if (!currentUser) return;
+            setLoading(true);
             const uid = currentUser.id;
             const url = `https://junic215.github.io/notify.html?uid=${uid}`;
+            const pdfContainer = document.getElementById('pdf-container');
             const printArea = document.getElementById('print-area');
             printArea.innerHTML = '';
 
-            // A4サイズを想定し、20枚程度のラベルを作成
-            for (let i = 0; i < 20; i++) {
+            // A4 幅に6個、縦に6個で合計36個 (1ページにピッタリ収まるように設計)
+            for (let i = 0; i < 36; i++) {
                 const item = document.createElement('div');
                 item.className = 'print-item';
                 
@@ -975,18 +976,33 @@
                 
                 new QRCode(qrBox, {
                     text: url,
-                    width: 140,
-                    height: 140,
+                    width: 100, // 高解像度で生成
+                    height: 100,
                     colorDark: "#1d1d1f",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.H
                 });
             }
-            
-            // QRCode群の生成を少し待ってからプリントダイアログを開く
-            setTimeout(() => {
-                window.print();
-            }, 600);
+
+            // QRCode群の生成完了を待機
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const opt = {
+                margin: 0,
+                filename: 'ReturnQR_A4.pdf',
+                image: { type: 'jpeg', quality: 1.0 },
+                html2canvas: { scale: 3, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                await html2pdf().set(opt).from(pdfContainer).save();
+            } catch (err) {
+                console.error("PDF生成エラー:", err);
+                alert("PDFの生成に失敗しました。");
+            } finally {
+                setLoading(false);
+            }
         }
 
         function generateQR() {
