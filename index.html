@@ -520,7 +520,7 @@
             border-radius: 10px;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             .hero-content h2 {
                 font-size: 1.8rem;
             }
@@ -539,31 +539,37 @@
 
             /* Service Points Mobile Optimization */
             .service-points {
-                padding: 40px 15px;
+                padding: 25px 10px;
             }
 
             .service-points h2 {
-                font-size: 1.5rem;
-                margin-bottom: 2rem;
+                font-size: 1.1rem;
+                margin-bottom: 1.25rem;
+                letter-spacing: -0.05em;
+                white-space: nowrap;
+            }
+
+            .points-grid {
+                gap: 12px;
             }
 
             .point-item {
                 display: grid;
                 grid-template-columns: auto 1fr;
-                gap: 10px 15px;
-                padding: 1.5rem;
+                gap: 5px 12px;
+                padding: 1rem;
                 text-align: left;
             }
 
             .point-icon {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
                 margin-bottom: 0;
                 grid-column: 1;
                 grid-row: 1;
             }
 
             .point-item h3 {
-                font-size: 1.1rem;
+                font-size: 1.05rem;
                 margin: 0;
                 grid-column: 2;
                 grid-row: 1;
@@ -574,7 +580,8 @@
                 font-size: 0.85rem;
                 grid-column: 1 / span 2;
                 grid-row: 2;
-                margin-top: 5px;
+                margin-top: 3px;
+                line-height: 1.5;
             }
 
             /* User Voices Mobile Optimization */
@@ -791,8 +798,6 @@
                 transform: translateX(calc(-324px * 6));
             }
         }
-
-
     </style>
 </head>
 
