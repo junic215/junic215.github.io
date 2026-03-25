@@ -596,6 +596,66 @@
             width: 100%;
             white-space: nowrap;
         }
+
+        /* --------------------------
+           Service Points
+        --------------------------- */
+        .service-points {
+            padding: 80px 20px;
+            background: white;
+            text-align: center;
+        }
+
+        .service-points h2 {
+            font-size: 2rem;
+            margin-bottom: 4rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .points-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .point-item {
+            text-align: left;
+            padding: 2.5rem;
+            border-radius: 24px;
+            background: #fbfbfd;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f2;
+        }
+
+        .point-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            background: white;
+        }
+
+        .point-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .point-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .point-item p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-sub);
+            margin: 0;
+        }
+
         /* --------------------------
            User Voices
         --------------------------- */
@@ -619,11 +679,13 @@
             display: flex;
             padding: 20px 0;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
+            /* Firefox */
         }
 
         .voice-container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari */
+            display: none;
+            /* Chrome, Safari */
         }
 
         .voice-track {
@@ -672,14 +734,20 @@
         }
 
         @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-324px * 6)); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-324px * 6));
+            }
         }
 
         @media (max-width: 480px) {
             .user-voices h2 {
                 font-size: 1.5rem;
             }
+
             .voice-track {
                 animation-duration: 40s;
             }
@@ -702,7 +770,9 @@
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h2>落とし物が、<br>あなたの元へ帰ってくる</h2>
-                <p>持ち物に専用のQRコードを貼るだけ。<br>誰かが見つけてスキャンすると、あなたに通知と位置情報が届きます。</p>
+                <p>持ち物に専用のQRコードを貼るだけ。<br>誰かが見つけてスキャンすると、あなたに通知と位置情報が届きます。
+                    <br><br>初期費用・月額費用は一切不要です。
+                </p>
             </div>
         </section>
 
@@ -717,7 +787,39 @@
                 <li><strong>位置情報とメッセージが持ち主に届く！</strong></li>
             </ol>
         </section>
-        
+
+        <!-- サービスのポイント -->
+        <section class="service-points">
+            <h2>Return QRが選ばれる理由</h2>
+            <div class="points-grid">
+                <div class="point-item">
+                    <span class="point-icon">🛡️</span>
+                    <h3>プライバシーを完全保護</h3>
+                    <p>拾った相手に名前や電話番号を教えることなく、匿名で安心のやり取りが可能です。個人情報を守りながら、確実な連絡手段を確保します。</p>
+                </div>
+                <div class="point-item">
+                    <span class="point-icon">🏫</span>
+                    <h3>施設・学校の負担を削減</h3>
+                    <p>落とし物の主を探す手間が大幅に減少。QRコードを読み取り、通知を押すだけで持ち主に通知されるため業務効率が向上します。</p>
+                </div>
+                <div class="point-item">
+                    <span class="point-icon">📱</span>
+                    <h3>即時通知で探し回る手間ゼロ</h3>
+                    <p>紛失した心当たりがある場所に電話をかけ回る必要はありません。QRコードを読み取られることでメール通知が届きます。</p>
+                </div>
+                <div class="point-item">
+                    <span class="point-icon">💡</span>
+                    <h3>圧倒的なコストパフォーマンス</h3>
+                    <p>QRシールを貼るだけで、どんな持ち物もスマートな遺失物対策デバイスに早変わり。月額費用もなく、手軽に始められる安全対策です。</p>
+                </div>
+                <div class="point-item">
+                    <span class="point-icon">🎒</span>
+                    <h3>お子様の持ち物に最適</h3>
+                    <p>傘や水筒、ランドセルなど、名前を直接書くのがためらわれるアイテムも、このシール一枚で安全に守ることができます。</p>
+                </div>
+            </div>
+        </section>
+
         <!-- 利用者の声 -->
         <section class="user-voices">
             <h2>利用者の声</h2>
@@ -726,64 +828,66 @@
                     <!-- 1周目 -->
                     <div class="voice-card">
                         <div class="voice-stars">★★★★★</div>
-                        <p class="voice-text">財布をカフェで忘れたとき、10分で通知が来ました！本当に助かりました。</p>
-                        <p class="voice-name">田中さん / 会社員</p>
-                    </div>
-                    <div class="voice-card">
-                        <div class="voice-stars">★★★★★</div>
-                        <p class="voice-text">設定がとても簡単。ステッカーのデザインも良くてスーツケースに馴染みます。</p>
-                        <p class="voice-name">佐藤さん / 旅行好き</p>
+                        <p class="voice-text">ノートPCをカフェに忘れたとき、店員さんがQRコードを読み取ってくれて、すぐに通知が来ました！本当に助かりました。</p>
+                        <p class="voice-name">Tさん / 会社員</p>
                     </div>
                     <div class="voice-card">
                         <div class="voice-stars">★★★★☆</div>
-                        <p class="voice-text">鍵を拾ったのですが、QRコードがあったのでスムーズにお返しできました。素敵な仕組みです。</p>
-                        <p class="voice-name">山本さん / 発見者</p>
+                        <p class="voice-text">登録・設定がとても簡単。QRコード貼るだけでコスパ最強の保険になってます。</p>
+                        <p class="voice-name">Sさん / 旅行好き</p>
                     </div>
                     <div class="voice-card">
                         <div class="voice-stars">★★★★★</div>
-                        <p class="voice-text">ジム用のボトルに貼っています。もう置き忘れの心配がなくて安心です。</p>
-                        <p class="voice-name">鈴木さん / 大学生</p>
-                    </div>
-                    <div class="voice-card">
-                        <div class="voice-stars">★★★★☆</div>
-                        <p class="voice-text">お気に入りの傘が戻ってこないと思っていましたが、これのおかげで無事帰ってきました。</p>
-                        <p class="voice-name">高橋さん / 自営業</p>
+                        <p class="voice-text">スマホに通知が来た時は感動しました。拾った人が気軽に連絡できる仕組みで、日本ならではの優しさを感じました。</p>
+                        <p class="voice-name">Yさん / 発見者</p>
                     </div>
                     <div class="voice-card">
                         <div class="voice-stars">★★★★★</div>
-                        <p class="voice-text">匿名なので電話番号を教える必要がなく、安心して利用できました。</p>
-                        <p class="voice-name">伊藤さん / 会社員</p>
+                        <p class="voice-text">
+                            拾得物の管理と連絡対応に手間がかかっていましたが、この仕組みで業務がかなり簡略化されました。スタッフの負担が減り、本来の業務に集中できるようになっています。</p>
+                        <p class="voice-name">Kさん / 施設管理者</p>
+                    </div>
+                    <div class="voice-card">
+                        <div class="voice-stars">★★★★★</div>
+                        <p class="voice-text">子どもの傘、水筒、お弁当箱、たくさん貼ってます。ママ友にも勧めて、密かにブームになってます。</p>
+                        <p class="voice-name">Tさん / 主婦</p>
+                    </div>
+                    <div class="voice-card">
+                        <div class="voice-stars">★★★★★</div>
+                        <p class="voice-text">匿名なので名前や電話番号等の個人情報を教える必要がなく、安心して利用できました。</p>
+                        <p class="voice-name">Iさん / 会社員</p>
                     </div>
                     <!-- 無限スクロール用の複製 -->
                     <div class="voice-card">
                         <div class="voice-stars">★★★★★</div>
-                        <p class="voice-text">財布をカフェで忘れたとき、10分で通知が来ました！本当に助かりました。</p>
-                        <p class="voice-name">田中さん / 会社員</p>
-                    </div>
-                    <div class="voice-card">
-                        <div class="voice-stars">★★★★★</div>
-                        <p class="voice-text">設定がとても簡単。ステッカーのデザインも良くてスーツケースに馴染みます。</p>
-                        <p class="voice-name">佐藤さん / 旅行好き</p>
+                        <p class="voice-text">ノートPCをカフェに忘れたとき、店員さんがQRコードを読み取ってくれて、すぐに通知が来ました！本当に助かりました。</p>
+                        <p class="voice-name">Tさん / 会社員</p>
                     </div>
                     <div class="voice-card">
                         <div class="voice-stars">★★★★☆</div>
-                        <p class="voice-text">鍵を拾ったのですが、QRコードがあったのでスムーズにお返しできました。素敵な仕組みです。</p>
-                        <p class="voice-name">山本さん / 発見者</p>
+                        <p class="voice-text">登録・設定がとても簡単。QRコード貼るだけでコスパ最強の保険になってます。</p>
+                        <p class="voice-name">Sさん / 旅行好き</p>
                     </div>
                     <div class="voice-card">
                         <div class="voice-stars">★★★★★</div>
-                        <p class="voice-text">ジム用のボトルに貼っています。もう置き忘れの心配がなくて安心です。</p>
-                        <p class="voice-name">鈴木さん / 大学生</p>
-                    </div>
-                    <div class="voice-card">
-                        <div class="voice-stars">★★★★☆</div>
-                        <p class="voice-text">お気に入りの傘が戻ってこないと思っていましたが、これのおかげで無事帰ってきました。</p>
-                        <p class="voice-name">高橋さん / 自営業</p>
+                        <p class="voice-text">スマホに通知が来た時は感動しました。拾った人が気軽に連絡できる仕組みで、日本ならではの優しさを感じました。</p>
+                        <p class="voice-name">Yさん / 発見者</p>
                     </div>
                     <div class="voice-card">
                         <div class="voice-stars">★★★★★</div>
-                        <p class="voice-text">匿名なので電話番号を教える必要がなく、安心して利用できました。</p>
-                        <p class="voice-name">伊藤さん / 会社員</p>
+                        <p class="voice-text">
+                            拾得物の管理と連絡対応に手間がかかっていましたが、この仕組みで業務がかなり簡略化されました。スタッフの負担が減り、本来の業務に集中できるようになっています。</p>
+                        <p class="voice-name">Kさん / 施設管理者</p>
+                    </div>
+                    <div class="voice-card">
+                        <div class="voice-stars">★★★★★</div>
+                        <p class="voice-text">子どもの傘、水筒、お弁当箱、たくさん貼ってます。ママ友にも勧めて、密かにブームになってます。</p>
+                        <p class="voice-name">Tさん / 主婦</p>
+                    </div>
+                    <div class="voice-card">
+                        <div class="voice-stars">★★★★★</div>
+                        <p class="voice-text">匿名なので名前や電話番号等の個人情報を教える必要がなく、安心して利用できました。</p>
+                        <p class="voice-name">Iさん / 会社員</p>
                     </div>
                 </div>
             </div>
@@ -873,7 +977,8 @@
                 <div class="url-box" id="url-box"></div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.8rem;">
-                    <button class="btn-primary" style="margin-bottom: 0;" onclick="downloadImage()">印刷用画像を表示（A4・36枚）</button>
+                    <button class="btn-primary" style="margin-bottom: 0;"
+                        onclick="downloadImage()">印刷用画像を表示（A4・36枚）</button>
                     <button class="btn-secondary" style="margin-bottom: 0;" onclick="copyURL()">URLをコピーする</button>
                 </div>
 
@@ -915,10 +1020,13 @@
             <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 1rem;">
                 スマートフォンの方は画像を<strong>長押し</strong>、PCの方は<strong>右クリック</strong>で保存し、A4用紙に印刷してください。
             </p>
-            <div style="overflow-y: auto; max-height: 60vh; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1rem;">
-                <img id="generated-image-preview" src="" alt="A4 QR Codes" style="width: 100%; height: auto; display: block;">
+            <div
+                style="overflow-y: auto; max-height: 60vh; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1rem;">
+                <img id="generated-image-preview" src="" alt="A4 QR Codes"
+                    style="width: 100%; height: auto; display: block;">
             </div>
-            <button class="btn-secondary" style="margin-top: 0; margin-bottom: 0;" onclick="closeImageModal()">閉じる</button>
+            <button class="btn-secondary" style="margin-top: 0; margin-bottom: 0;"
+                onclick="closeImageModal()">閉じる</button>
         </div>
     </div>
 
@@ -1139,23 +1247,23 @@
             for (let i = 0; i < 36; i++) {
                 const item = document.createElement('div');
                 item.className = 'print-item';
-                
+
                 const logo = document.createElement('img');
                 logo.src = 'logo.png';
                 logo.className = 'print-logo';
                 item.appendChild(logo);
-                
+
                 const qrBox = document.createElement('div');
                 qrBox.className = 'print-qr';
                 item.appendChild(qrBox);
-                
+
                 const text = document.createElement('div');
                 text.className = 'print-text';
                 text.innerHTML = '持ち主に匿名通知できます<br>ご協力お願いします';
                 item.appendChild(text);
-                
+
                 printArea.appendChild(item);
-                
+
                 new QRCode(qrBox, {
                     text: url,
                     width: 100,
