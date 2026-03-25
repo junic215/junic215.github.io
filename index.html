@@ -536,6 +536,55 @@
             .step-list li {
                 font-size: 0.95rem;
             }
+
+            /* Service Points Mobile Optimization */
+            .service-points {
+                padding: 40px 15px;
+            }
+
+            .service-points h2 {
+                font-size: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .point-item {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 10px 15px;
+                padding: 1.5rem;
+                text-align: left;
+            }
+
+            .point-icon {
+                font-size: 1.8rem;
+                margin-bottom: 0;
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .point-item h3 {
+                font-size: 1.1rem;
+                margin: 0;
+                grid-column: 2;
+                grid-row: 1;
+                align-self: center;
+            }
+
+            .point-item p {
+                font-size: 0.85rem;
+                grid-column: 1 / span 2;
+                grid-row: 2;
+                margin-top: 5px;
+            }
+
+            /* User Voices Mobile Optimization */
+            .user-voices h2 {
+                font-size: 1.5rem;
+            }
+
+            .voice-track {
+                animation-duration: 40s;
+            }
         }
 
         /* ----- 画像生成用スタイル ----- */
@@ -743,15 +792,7 @@
             }
         }
 
-        @media (max-width: 480px) {
-            .user-voices h2 {
-                font-size: 1.5rem;
-            }
 
-            .voice-track {
-                animation-duration: 40s;
-            }
-        }
     </style>
 </head>
 
