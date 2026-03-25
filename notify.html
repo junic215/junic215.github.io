@@ -8,7 +8,6 @@
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
@@ -239,12 +238,6 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluempmeXhnamJyeHZ0cHpwcWdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxODkzMTAsImV4cCI6MjA4OTc2NTMxMH0.MHvz-nxpfdSkvJd8zexyHSvT_o8Us7F9DRr13_5awLo';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const EMAILJS_PUBLIC_KEY = 'Yn4lx7V4Cj1mekEt5';
-        const EMAILJS_SERVICE_ID = 'service_f5yp4ps';
-        const EMAILJS_TEMPLATE_ID = 'template_ybdsqra';
-
-        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
         const urlParams = new URLSearchParams(window.location.search);
         const uid = urlParams.get('uid');
 
@@ -335,13 +328,15 @@
                     }
                 }
 
-                const templateParams = {
-                    to_email: targetEmail,
-                    message: message,
-                    location: locationText
-                };
+                const { data, error: funcError } = await supabaseClient.functions.invoke('dynamic-responder', {
+                    body: {
+                        to_email: targetEmail,
+                        message: message,
+                        location: locationText
+                    }
+                });
 
-                await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+                if (funcError) throw funcError;
 
                 alert('持ち主にメッセージを送信しました！\nご協力ありがとうございます。');
                 document.getElementById('message').value = '';
