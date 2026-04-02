@@ -916,6 +916,38 @@
         }
 
         /* --------------------------
+           QR Composite Card
+        --------------------------- */
+        .qr-composite-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            margin: 1.5rem auto;
+            width: fit-content;
+        }
+
+        .qr-card-logo {
+            width: 140px;
+            height: auto;
+            margin-bottom: 12px;
+        }
+
+        .qr-card-text {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #000;
+            margin-top: 10px;
+            line-height: 1.4;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* --------------------------
            User Info Section
         --------------------------- */
         .user-info-section {
@@ -1225,7 +1257,24 @@
             <!-- ログイン後ダッシュボード -->
             <div id="dashboard-section">
                 <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem; margin-top: 1rem;">My QRコード</h1>
-                <p class="subtitle" style="margin-bottom: 1.5rem;">このQRコードを印刷して持ち物に貼り付けてください</p>
+                <p class="subtitle" style="margin-bottom: 1rem;">このQRコードを印刷して持ち物に貼り付けてください</p>
+
+                <!-- リッチQRカード -->
+                <div class="qr-composite-card">
+                    <img src="logo.png" alt="Logo" class="qr-card-logo">
+                    <div id="qrcode"></div>
+                    <div class="qr-card-text">
+                        持ち主に匿名通知できます<br>
+                        ご協力お願いします
+                    </div>
+                </div>
+
+                <div class="url-box" id="url-box"></div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
+                    <button class="btn-primary" style="margin-bottom: 0;"
+                        onclick="downloadImage()">印刷用画像を表示（A4・36枚）</button>
+                </div>
 
                 <div class="user-info-section">
                     <div class="user-info-item">
@@ -1249,15 +1298,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="qr-container" id="qrcode"></div>
-
-                <div class="url-box" id="url-box"></div>
-
-                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
-                    <button class="btn-primary" style="margin-bottom: 0;"
-                        onclick="downloadImage()">印刷用画像を表示（A4・36枚）</button>
                 </div>
 
                 <!-- 通知履歴セクション -->
