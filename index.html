@@ -921,7 +921,10 @@
     <!-- ヘッダー -->
     <header>
         <img src="logo.png" alt="Return QR" class="header-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-        <button class="header-login-btn" id="header-btn" onclick="scrollToAuth()">ログイン・登録</button>
+        <div id="header-right">
+            <button class="header-login-btn" id="header-btn" onclick="scrollToAuth()">ログイン・登録</button>
+            <button class="header-login-btn" id="header-logout-btn" onclick="handleLogout()" style="display: none; color: var(--danger); border-color: var(--danger);">ログアウト</button>
+        </div>
     </header>
 
     <!-- メインコンテンツ (ダッシュボード表示時は非表示になる) -->
@@ -1065,67 +1068,71 @@
 
             <!-- ログインフォーム -->
             <div id="auth-section">
-                <img src="logo.png" alt="Logo" class="logo">
-                <p class="subtitle">ログインして QR コードを管理</p>
+                <form onsubmit="handleLogin(); return false;">
+                    <img src="logo.png" alt="Logo" class="logo">
+                    <p class="subtitle">ログインして QR コードを管理</p>
 
-                <div class="form-group">
-                    <label for="email">メールアドレス</label>
-                    <input type="email" id="email" placeholder="example@apple.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">パスワード</label>
-                    <input type="password" id="password" placeholder="6文字以上" required>
-                </div>
-                <div class="form-group"
-                    style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
-                    <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
-                </div>
-                <button class="btn-primary" onclick="handleLogin()">ログイン</button>
-                <div id="login-error"
-                    style="display: none; color: #ff3b30; font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500;">
-                </div>
-                <button class="btn-secondary" onclick="showRegisterSection()">新規登録はこちら</button>
+                    <div class="form-group">
+                        <label for="email">メールアドレス</label>
+                        <input type="email" id="email" name="email" placeholder="example@apple.com" autocomplete="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">パスワード</label>
+                        <input type="password" id="password" name="password" placeholder="6文字以上" autocomplete="current-password" required>
+                    </div>
+                    <div class="form-group"
+                        style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
+                        <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
+                    </div>
+                    <button type="submit" class="btn-primary">ログイン</button>
+                    <div id="login-error"
+                        style="display: none; color: #ff3b30; font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500;">
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="showRegisterSection()">新規登録はこちら</button>
 
-                <div class="auth-links">
-                    <a href="#" onclick="handleForgotPassword(); return false;">パスワードを忘れた方</a>
-                    <span class="divider">|</span>
-                    <a href="#" onclick="openTermsModal(); return false;">利用規約</a>
-                </div>
+                    <div class="auth-links">
+                        <a href="#" onclick="handleForgotPassword(); return false;">パスワードを忘れた方</a>
+                        <span class="divider">|</span>
+                        <a href="#" onclick="openTermsModal(); return false;">利用規約</a>
+                    </div>
+                </form>
             </div>
 
             <!-- 新規登録フォーム -->
             <div id="register-section">
-                <img src="logo.png" alt="Logo" class="logo">
-                <p class="subtitle">新規アカウント作成</p>
+                <form onsubmit="submitRegister(); return false;">
+                    <img src="logo.png" alt="Logo" class="logo">
+                    <p class="subtitle">新規アカウント作成</p>
 
-                <div class="form-group">
-                    <label for="reg-email">メールアドレス</label>
-                    <input type="email" id="reg-email" placeholder="example@apple.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-password">希望するパスワード</label>
-                    <input type="password" id="reg-password" placeholder="6文字以上" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-password-confirm">パスワードの再入力</label>
-                    <input type="password" id="reg-password-confirm" placeholder="もう一度入力" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-nickname">ニックネーム</label>
-                    <input type="text" id="reg-nickname" placeholder="ニックネーム" required>
-                </div>
+                    <div class="form-group">
+                        <label for="reg-email">メールアドレス</label>
+                        <input type="email" id="reg-email" name="email" placeholder="example@apple.com" autocomplete="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">希望するパスワード</label>
+                        <input type="password" id="reg-password" name="new-password" placeholder="6文字以上" autocomplete="new-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password-confirm">パスワードの再入力</label>
+                        <input type="password" id="reg-password-confirm" name="new-password-confirm" placeholder="もう一度入力" autocomplete="new-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-nickname">ニックネーム</label>
+                        <input type="text" id="reg-nickname" name="nickname" placeholder="ニックネーム" autocomplete="nickname" required>
+                    </div>
 
-                <div class="form-group"
-                    style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
-                    <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
-                </div>
+                    <div class="form-group"
+                        style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
+                        <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
+                    </div>
 
-                <button class="btn-primary" onclick="submitRegister()">登録する</button>
-                <div id="register-error"
-                    style="display: none; color: #ff3b30; font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500;">
-                </div>
-                <button class="btn-secondary" style="margin-top: 0.5rem;"
-                    onclick="showLoginSection()">ログイン画面に戻る</button>
+                    <button type="submit" class="btn-primary">登録する</button>
+                    <div id="register-error"
+                        style="display: none; color: #ff3b30; font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500;">
+                    </div>
+                    <button type="button" class="btn-secondary" style="margin-top: 0.5rem;"
+                        onclick="showLoginSection()">ログイン画面に戻る</button>
+                </form>
             </div>
 
             <!-- ログイン後ダッシュボード -->
@@ -1138,14 +1145,10 @@
 
                 <div class="url-box" id="url-box"></div>
 
-                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.8rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
                     <button class="btn-primary" style="margin-bottom: 0;"
                         onclick="downloadImage()">印刷用画像を表示（A4・36枚）</button>
-                    <button class="btn-secondary" style="margin-bottom: 0;" onclick="copyURL()">URLをコピーする</button>
                 </div>
-
-                <!-- ログアウトボタン -->
-                <button class="btn-danger" onclick="handleLogout()">ログアウト</button>
 
                 <!-- 通知履歴セクション -->
                 <div class="notification-section">
@@ -1350,6 +1353,7 @@
             document.getElementById('dashboard-section').style.display = 'none';
             document.getElementById('landing-content').style.display = 'block';
             document.getElementById('header-btn').style.display = 'block';
+            document.getElementById('header-logout-btn').style.display = 'none';
         }
 
         async function handleForgotPassword() {
@@ -1396,6 +1400,7 @@
             currentUser = user;
             document.getElementById('landing-content').style.display = 'none';
             document.getElementById('header-btn').style.display = 'none';
+            document.getElementById('header-logout-btn').style.display = 'block';
             document.getElementById('auth-section').style.display = 'none';
             if (document.getElementById('register-section')) {
                 document.getElementById('register-section').style.display = 'none';
@@ -1647,6 +1652,7 @@
                 currentUser = null;
                 document.getElementById('landing-content').style.display = 'block';
                 document.getElementById('header-btn').style.display = 'block';
+                document.getElementById('header-logout-btn').style.display = 'none';
                 document.getElementById('auth-section').style.display = 'block';
                 if (document.getElementById('register-section')) {
                     document.getElementById('register-section').style.display = 'none';
