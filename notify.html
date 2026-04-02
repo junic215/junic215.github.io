@@ -330,6 +330,22 @@
                     }
                 }
 
+                // 通知履歴をSupabaseに保存
+                const { error: dbError } = await supabaseClient
+                    .from('notifications')
+                    .insert([
+                        {
+                            user_id: uid,
+                            message: message,
+                            location: locationText
+                        }
+                    ]);
+
+                if (dbError) {
+                    console.error("通知の保存に失敗しました:", dbError);
+                    // 保存に失敗してもメール通知は続行するが、ログには出す
+                }
+
                 const { data, error: funcError } = await supabaseClient.functions.invoke('dynamic-responder', {
                     body: {
                         to_email: targetEmail,

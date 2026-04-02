@@ -798,6 +798,89 @@
                 transform: translateX(calc(-324px * 6));
             }
         }
+
+        /* --------------------------
+           Notification History
+        --------------------------- */
+        .notification-section {
+            margin-top: 2.5rem;
+            text-align: left;
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+        }
+
+        .notification-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: var(--text-main);
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .notification-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .notification-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .notification-date {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        .notification-body {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .notification-footer {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .location-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .location-link:hover {
+            text-decoration: underline;
+        }
+
+        .no-notifications {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            background: #f9f9fb;
+            border-radius: 16px;
+            border: 1px dashed var(--border);
+        }
     </style>
 </head>
 
@@ -1030,6 +1113,14 @@
 
                 <!-- ログアウトボタン -->
                 <button class="btn-danger" onclick="handleLogout()">ログアウト</button>
+
+                <!-- 通知履歴セクション -->
+                <div class="notification-section">
+                    <h2>通知履歴</h2>
+                    <div id="notification-list" class="notification-list">
+                        <div class="no-notifications">読み込み中...</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1278,7 +1369,75 @@
             }
             document.getElementById('dashboard-section').style.display = 'block';
             generateQR();
+            fetchNotifications();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function fetchNotifications() {
+            if (!currentUser) return;
+
+            const listContainer = document.getElementById('notification-list');
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('notifications')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    listContainer.innerHTML = '<div class="no-notifications">通知はまだありません。</div>';
+                    return;
+                }
+
+                listContainer.innerHTML = data.map(notif => {
+                    const date = new Date(notif.created_at).toLocaleString('ja-JP', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    let locationHtml = '';
+                    if (notif.location && notif.location.startsWith('http')) {
+                        locationHtml = `
+                            <div class="notification-footer">
+                                <a href="${notif.location}" target="_blank" class="location-link">
+                                    📍 位置情報を確認する
+                                </a>
+                            </div>`;
+                    } else if (notif.location) {
+                        locationHtml = `<div class="notification-footer text-sub" style="font-size: 0.8rem;">${notif.location}</div>`;
+                    }
+
+                    return `
+                        <div class="notification-card">
+                            <div class="notification-header">
+                                <span class="notification-date">${date}</span>
+                            </div>
+                            <div class="notification-body">${escapeHtml(notif.message)}</div>
+                            ${locationHtml}
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error("通知取得エラー:", err);
+                listContainer.innerHTML = '<div class="no-notifications">通知の取得に失敗しました。</div>';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         async function downloadImage() {
