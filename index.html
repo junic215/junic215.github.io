@@ -348,6 +348,33 @@
             color: #d2d2d7;
         }
 
+        /* Google Button Style */
+        .btn-google {
+            background-color: white;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            padding: 0.8rem 1rem;
+            border-radius: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-google:hover {
+            background-color: #f8f9fa;
+            border-color: #d2d2d7;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+
+        .btn-google img {
+            width: 20px;
+            height: 20px;
+        }
+
         .qr-container {
             margin: 1.5rem auto;
             padding: 1.5rem;
@@ -1185,74 +1212,23 @@
                 <div class="spinner"></div>処理中...
             </div>
 
-            <!-- ログインフォーム -->
+            <!-- 認証セクション -->
             <div id="auth-section">
-                <form onsubmit="handleLogin(); return false;">
-                    <img src="logo.png" alt="Logo" class="logo">
-                    <p class="subtitle">ログインして QR コードを管理</p>
+                <img src="logo.png" alt="Logo" class="logo">
+                <p class="subtitle">Google アカウントでログイン / 新規登録</p>
+                
+                <button type="button" class="btn-google" onclick="handleGoogleLogin()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                    Googleでログイン / 登録
+                </button>
 
-                    <div class="form-group">
-                        <label for="email">メールアドレス</label>
-                        <input type="email" id="email" name="email" placeholder="example@apple.com" autocomplete="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">パスワード</label>
-                        <input type="password" id="password" name="password" placeholder="6文字以上" autocomplete="current-password" required>
-                    </div>
-                    <div class="form-group"
-                        style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
-                        <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
-                    </div>
-                    <button type="submit" class="btn-primary">ログイン</button>
-                    <div id="login-error"
-                        style="display: none; color: #ff3b30; font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500;">
-                    </div>
-                    <button type="button" class="btn-secondary" onclick="showRegisterSection()">新規登録はこちら</button>
-
-                    <div class="auth-links">
-                        <a href="#" onclick="handleForgotPassword(); return false;">パスワードを忘れた方</a>
-                        <span class="divider">|</span>
-                        <a href="#" onclick="openTermsModal(); return false;">利用規約</a>
-                    </div>
-                </form>
+                <div class="auth-links">
+                    <a href="#" onclick="openTermsModal(); return false;">利用規約</a>
+                </div>
             </div>
 
-            <!-- 新規登録フォーム -->
-            <div id="register-section">
-                <form onsubmit="submitRegister(); return false;">
-                    <img src="logo.png" alt="Logo" class="logo">
-                    <p class="subtitle">新規アカウント作成</p>
-
-                    <div class="form-group">
-                        <label for="reg-email">メールアドレス</label>
-                        <input type="email" id="reg-email" name="email" placeholder="example@apple.com" autocomplete="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="reg-password">希望するパスワード</label>
-                        <input type="password" id="reg-password" name="new-password" placeholder="6文字以上" autocomplete="new-password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="reg-password-confirm">パスワードの再入力</label>
-                        <input type="password" id="reg-password-confirm" name="new-password-confirm" placeholder="もう一度入力" autocomplete="new-password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="reg-nickname">ニックネーム</label>
-                        <input type="text" id="reg-nickname" name="nickname" placeholder="ニックネーム" autocomplete="nickname" required>
-                    </div>
-
-                    <div class="form-group"
-                        style="display: flex; justify-content: center; margin-top: 1rem; margin-bottom: 1rem;">
-                        <div class="g-recaptcha" data-sitekey="6LfPkZUsAAAAALxPkYo0nQZSPFXrDrP3LjpRnTyx"></div>
-                    </div>
-
-                    <button type="submit" class="btn-primary">登録する</button>
-                    <div id="register-error"
-                        style="display: none; color: #ff3b30; font-size: 0.9rem; margin-bottom: 0.8rem; font-weight: 500;">
-                    </div>
-                    <button type="button" class="btn-secondary" style="margin-top: 0.5rem;"
-                        onclick="showLoginSection()">ログイン画面に戻る</button>
-                </form>
-            </div>
+            <!-- 新規登録フォームはGoogleログインに統合されたため削除 -->
+            <div id="register-section" style="display: none;"></div>
 
             <!-- ログイン後ダッシュボード -->
             <div id="dashboard-section">
@@ -1376,115 +1352,17 @@
             else container.classList.remove('is-loading');
         }
 
-        function showRegisterSection() {
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('register-section').style.display = 'block';
-            if (document.getElementById('register-error')) {
-                document.getElementById('register-error').style.display = 'none';
-            }
-        }
-
-        function showLoginSection() {
-            document.getElementById('register-section').style.display = 'none';
-            document.getElementById('auth-section').style.display = 'block';
-        }
-
-        async function submitRegister() {
-            const email = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value;
-            const passwordConfirm = document.getElementById('reg-password-confirm').value;
-            const nickname = document.getElementById('reg-nickname').value.trim();
-            const recaptchaResponse = document.querySelector('#register-section .g-recaptcha-response').value;
-
-            const registerError = document.getElementById('register-error');
-            registerError.style.display = 'none';
-
-            if (!email || !password || !passwordConfirm || !nickname) {
-                registerError.innerText = 'すべての項目を入力してください。';
-                registerError.style.display = 'block';
-                return;
-            }
-
-            if (password !== passwordConfirm) {
-                registerError.innerText = 'パスワードが一致しません。';
-                registerError.style.display = 'block';
-                return;
-            }
-
-            if (password.length < 6) {
-                registerError.innerText = 'パスワードは6文字以上で入力してください。';
-                registerError.style.display = 'block';
-                return;
-            }
-
-            if (recaptchaResponse.length === 0) {
-                registerError.innerText = 'reCAPTCHA（チェックボックス）を確認してください。';
-                registerError.style.display = 'block';
-                return;
-            }
-
+        async function handleGoogleLogin() {
             setLoading(true);
-            const { data, error } = await supabaseClient.auth.signUp({
-                email: email,
-                password: password,
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
                 options: {
-                    data: {
-                        nickname: nickname,
-                        display_name: nickname
-                    }
+                    redirectTo: window.location.origin + window.location.pathname
                 }
             });
-            setLoading(false);
-
             if (error) {
-                registerError.innerText = '登録エラー: ' + error.message;
-                registerError.style.display = 'block';
-            } else if (data && data.user && data.user.identities && data.user.identities.length === 0) {
-                registerError.innerText = 'このメールアドレスは既に登録されています。';
-                registerError.style.display = 'block';
-            } else {
-                alert('登録が完了しました。メールを確認してログインしてください。');
-                showLoginSection();
-                document.getElementById('email').value = email;
-                document.getElementById('password').value = '';
-                document.getElementById('reg-password').value = '';
-                document.getElementById('reg-password-confirm').value = '';
-                try { grecaptcha.reset(); } catch (e) { }
-            }
-        }
-
-        async function handleLogin() {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const recaptchaResponse = document.querySelector('#auth-section .g-recaptcha-response').value;
-            const loginError = document.getElementById('login-error');
-
-            loginError.style.display = 'none';
-
-            if (!email || !password) {
-                loginError.innerText = 'メールアドレスとパスワードを入力してください。';
-                loginError.style.display = 'block';
-                return;
-            }
-
-            if (recaptchaResponse.length === 0) {
-                loginError.innerText = 'reCAPTCHA（チェックボックス）を確認してください。';
-                loginError.style.display = 'block';
-                return;
-            }
-
-            setLoading(true);
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-            setLoading(false);
-
-            if (error) {
-                loginError.innerText = 'メールアドレスまたはパスワードが違います。';
-                loginError.style.display = 'block';
-            } else {
-                showDashboard(data.user);
+                setLoading(false);
+                alert('ログインエラー: ' + error.message);
             }
         }
 
@@ -1494,36 +1372,11 @@
             await supabaseClient.auth.signOut();
             setLoading(false);
             currentUser = null;
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
             document.getElementById('auth-section').style.display = 'block';
-            if (document.getElementById('register-section')) {
-                document.getElementById('register-section').style.display = 'none';
-            }
             document.getElementById('dashboard-section').style.display = 'none';
             document.getElementById('landing-content').style.display = 'block';
             document.getElementById('header-btn').style.display = 'block';
             document.getElementById('header-logout-btn').style.display = 'none';
-        }
-
-        async function handleForgotPassword() {
-            const email = document.getElementById('email').value.trim();
-            if (!email) {
-                alert('パスワードをリセットするには、メールアドレスを入力してください。\n\nメールアドレス入力後、再度「パスワードを忘れた方」をクリックしてください。');
-                return;
-            }
-
-            setLoading(true);
-            const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                redirectTo: window.location.href,
-            });
-            setLoading(false);
-
-            if (error) {
-                alert('エラー: ' + error.message);
-            } else {
-                alert('パスワード再設定のメールを送信しました。受信トレイをご確認ください。');
-            }
         }
 
         function openTermsModal() {
@@ -1566,7 +1419,7 @@
             if (!currentUser) return;
 
             // ニックネームの表示
-            const nickname = currentUser.user_metadata.display_name || currentUser.user_metadata.nickname || 'ユーザー';
+            const nickname = currentUser.user_metadata.full_name || currentUser.user_metadata.display_name || currentUser.user_metadata.nickname || 'ユーザー';
             document.getElementById('display-nickname').innerText = nickname;
 
             // 通知用メールアドレスの取得 (usersテーブル)
